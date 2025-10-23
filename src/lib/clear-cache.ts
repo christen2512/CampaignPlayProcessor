@@ -8,7 +8,7 @@ const clearCache = async () => {
         
         const count = await redis.del(keysToDelete);
         console.log(`Successfully deleted ${count} keys`);
-    }catch(error: any){
+    }catch(error){
         console.error('Failed to clear Redis cache: ', error);
     }finally{
         redis.quit();

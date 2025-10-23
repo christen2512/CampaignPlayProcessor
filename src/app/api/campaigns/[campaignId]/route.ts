@@ -3,7 +3,7 @@ import redis from '@/lib/redis';
 import { ScreenStat } from '@/lib/types';
 
 
-export async function GET(request: Request, context: {params: {campaignId: string}}) {
+export async function GET(request: Request, context: {params: Promise<{campaignId: string}>}) {
   try {
     const { campaignId } = await context.params;
 
@@ -27,7 +27,7 @@ export async function GET(request: Request, context: {params: {campaignId: strin
 
     return NextResponse.json(campaignScreenStats);
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching screen stats:', error);
     return NextResponse.json({ error: 'Failed to fetch screen stats' }, { status: 500 });
   }

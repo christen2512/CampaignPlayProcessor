@@ -9,16 +9,13 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { CampaignStats } from "@/lib/types";
-import { useState } from "react";
-import { Spinner } from "../ui/spinner";
   
-interface Props{
+  interface Props {
     campaigns: CampaignStats[];
     onRowClick: (campaignId: string) => void;
-}
-  
+  }
+    
 export function CampaignStatsTable({ campaigns, onRowClick} : Props) {
-    console.log(`campaigns length on mount ${campaigns.length}`)
     return (
         <div> 
             <Table>
@@ -48,6 +45,4 @@ export function CampaignStatsTable({ campaigns, onRowClick} : Props) {
             </Table>
         </div>
     )
-    
 }
-  

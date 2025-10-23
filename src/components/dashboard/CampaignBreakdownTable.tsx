@@ -1,12 +1,7 @@
 'use client'
 import { ScreenStat } from "@/lib/types";
 import { Spinner } from "../ui/spinner";
-import { Table } from "lucide-react";
-import { TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell } from "../ui/table";
-import { Dialog, DialogClose, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { DialogFooter, DialogHeader } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { useState } from "react";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 
 interface Props{

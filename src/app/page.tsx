@@ -1,4 +1,3 @@
-import { CampaignStatsTable } from "@/components/dashboard/CampaignStatsTable";
 import { Dashboard } from "@/components/dashboard/Dashboard";
 
 export default function Home() {

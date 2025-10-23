@@ -1,0 +1,23 @@
+# fly.worker.toml - Background Worker
+
+
+app = 'campaign-processor-worker'
+primary_region = 'cdg'
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+
+[processes]
+  worker = "node dist/worker.js"
+
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[deploy]
+  strategy = "immediate"
+

@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { CampaignStatsTable } from "./CampaignStatsTable";
 import CampaignBreakdownTable from "./CampaignBreakdownTable";
-import { Spinner } from "../ui/spinner";
+import { LoadingIndicator } from "../ui/LoadingIndicator";
 
 
 const generateRandomEvent = (): PlayEvent => {
@@ -48,8 +48,8 @@ export function Dashboard(){
  
                 setCampaigns(result)
                 setIsCampaignStatsLoading(false);
-            } catch(error: any){
-                console.error(`Couldn't fetch data for campaigns with error ${error.message}`);
+            } catch(error){
+                console.error(`Couldn't fetch data for campaigns with error ${error}`);
             }
            
         }
@@ -69,8 +69,8 @@ export function Dashboard(){
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify(event)
             });
-        } catch(error: any){
-            console.error('Failed to send event to server: ', error.message)
+        } catch(error){
+            console.error('Failed to send event to server: ', error)
         }
        
     }
@@ -105,8 +105,8 @@ export function Dashboard(){
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(MOCK_PLAY_EVENTS)
         });
-      }catch(error: any){
-        console.error('Failed to send bulk events to server ', error.message);
+      }catch(error){
+        console.error('Failed to send bulk events to server ', error);
       }
     }
     return (
@@ -116,20 +116,14 @@ export function Dashboard(){
             <Button variant='secondary' onClick={simulateBulkEvents} className='m-4'>Load Bulk Events</Button>
         </div>
         {isCampaignStatsLoading ? (
-                <div className="flex flex-col items-center justify-center p-8">
-                    <p>Loading campaigns....</p>
-                    <Spinner />
-                </div>) :
-        (<CampaignStatsTable
+            <LoadingIndicator title="Loading campaigns...." />
+        ) : (
+        <CampaignStatsTable
             campaigns={campaigns} 
             onRowClick={handleCampaignSelect}
        />)}
         
-        {isBreakdownLoading && 
-                <div className="flex flex-col items-center justify-center p-8">
-                    <p>Loading breakdown....</p>
-                    <Spinner />
-                </div>}
+        {isBreakdownLoading && <LoadingIndicator title="Loading breakdown...." />}
         
         {selectedCampaignId && !isBreakdownLoading && (
             <CampaignBreakdownTable 
