@@ -15,40 +15,37 @@ import { Spinner } from "../ui/spinner";
 interface Props{
     campaigns: CampaignStats[];
     onRowClick: (campaignId: string) => void;
-    selectedCampaignId: string | null;
-    isLoading: boolean;
 }
   
-export function CampaignStatsTable({ campaigns, onRowClick, selectedCampaignId, isLoading} : Props) {
-  
+export function CampaignStatsTable({ campaigns, onRowClick} : Props) {
+    console.log(`campaigns length on mount ${campaigns.length}`)
     return (
-        <div>
-            {isLoading ? (
-                <div>
-                    <p>Loading data....</p>
-                    <Spinner/>
-                </div>) : 
-                (<Table>
-                    <TableCaption>A list of your campaigns and number of plays.</TableCaption>
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[100px]">Campaign ID</TableHead>
-                        <TableHead>Number of Plays</TableHead>
+        <div> 
+            <Table>
+                <TableCaption>
+                    {campaigns.length > 0
+                        ? 'A list of your campaigns and number of plays. Click a campaign for impressions breakdown'
+                        : 'No campaigns available, try adding some.'}
+                </TableCaption>
+                <TableHeader>
+                <TableRow>
+                    <TableHead className="w-[100px]">Campaign ID</TableHead>
+                    <TableHead>Number of Plays</TableHead>
+                </TableRow>
+                </TableHeader>
+                <TableBody>
+                {campaigns.map((campaign) => (
+                    <TableRow 
+                        key={campaign.campaign_id}
+                        onClick={() => onRowClick(campaign.campaign_id)}
+                        className="cursor-pointer hover:bg-gray-400"    
+                    >
+                    <TableCell className="font-medium">{campaign.campaign_id}</TableCell>
+                    <TableCell>{campaign.play_count}</TableCell>
                     </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                    {campaigns.map((campaign) => (
-                        <TableRow 
-                            key={campaign.campaign_id}
-                            onClick={() => onRowClick(campaign.campaign_id)}
-                            className="cursor-pointer hover:bg-gray-400"    
-                        >
-                        <TableCell className="font-medium">{campaign.campaign_id}</TableCell>
-                        <TableCell>{campaign.play_count}</TableCell>
-                        </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>)}
+                ))}
+                </TableBody>
+            </Table>
         </div>
     )
     

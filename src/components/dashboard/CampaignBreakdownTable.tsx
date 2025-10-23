@@ -7,42 +7,44 @@ import { Dialog, DialogClose, DialogContent, DialogTitle } from "@radix-ui/react
 import { DialogFooter, DialogHeader } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useState } from "react";
+import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 
 interface Props{
     campaignBreakdowns: ScreenStat[];
     isLoading: boolean;
+    onClose: () => void;
 }
-export default function CampaignBreakdownTable({campaignBreakdowns, isLoading} : Props){
-    const [isOpen, setIsOpen] = useState<boolean>(true);
+export default function CampaignBreakdownTable({campaignBreakdowns, isLoading, onClose} : Props){
+
     return (
-        <div>
+        <div className="flex p-6 justify-center w-82">
             {isLoading ? (<Spinner/>) : (
-       
-            <Dialog open={isOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>
-                        Screen IDs
-                    </DialogTitle>
-                    <DialogTitle>
-                        Impressions per Hour
-                    </DialogTitle>
-                </DialogHeader>
-              <div>
-              {campaignBreakdowns.map((campaign) => (
-                <div className='flex flex-row justify-center'>
-                    <p className="pr-4">{campaign.screen_id}</p>
-                    <p>{campaign.impressions}</p>
+            <Card className="grid grid-flow-col grid-cols-2 gap-6 w-full max-w-sm">
+                <CardContent>
+                    <CardHeader className="flex flex-row gap-9">
+                        <CardTitle className="row-start-1 col-start-1">
+                            Screen IDs
+                        </CardTitle>
+                        <CardTitle className="row-start-1 col-start-2">
+                            Impressions
+                        </CardTitle>
+                    </CardHeader>
+                <div>
+                    {campaignBreakdowns.map((campaign) => (
+                        <div key={campaign.screen_id} className='flex flex-row gap-8 pl-6 my-4'>
+                            <p className="pr-4">{campaign.screen_id}</p>
+                            <p>{campaign.impressions}</p>
+                        </div>
+                    ))}
                 </div>
-                ))}
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                    <Button variant='outline' onClick={() => setIsOpen(!isOpen)}>Close</Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                <CardFooter className="flex justify-center">
+                    <CardAction>
+                        <Button variant='outline' onClick={onClose}>Close</Button>
+                    </CardAction>
+                </CardFooter>
+                </CardContent>
+            </Card>
+           
             )}
 
         </div>

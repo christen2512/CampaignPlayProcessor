@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { CampaignStatsTable } from "./CampaignStatsTable";
 import CampaignBreakdownTable from "./CampaignBreakdownTable";
+import { Spinner } from "../ui/spinner";
 
 
 const generateRandomEvent = (): PlayEvent => {
@@ -30,7 +31,7 @@ export function Dashboard(){
     const [campaignBreakdown, setCampaignBreakdown] = useState<ScreenStat[]>([]);
     const [isBreakdownLoading, setIsBreakdownLoading] = useState(false);
     const [campaigns, setCampaigns] = useState<CampaignStats[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isCampaignStatsLoading, setIsCampaignStatsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const getCampaignData = async () => {
@@ -46,20 +47,18 @@ export function Dashboard(){
                 }
  
                 setCampaigns(result)
-                setIsLoading(false);
+                setIsCampaignStatsLoading(false);
             } catch(error: any){
                 console.error(`Couldn't fetch data for campaigns with error ${error.message}`);
             }
            
         }
-        const timer = setInterval(() => {
-            getCampaignData();
-        }, 1500)
+        const timer = setInterval(getCampaignData, 1500)
 
         return () => {
             clearTimeout(timer);
         }
-    }, [campaigns])
+    }, [])
 
 
     const simulateEvent = async () => {
@@ -94,19 +93,49 @@ export function Dashboard(){
         }
 
     }
+
+    const handleCloseBreakdown = () => {
+        setSelectedCampaignId(null);
+    }
+
+    const simulateBulkEvents = async () => {
+      try{
+        await fetch(`${API_BASE_URL}/events/bulk`, {
+            method:'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(MOCK_PLAY_EVENTS)
+        });
+      }catch(error: any){
+        console.error('Failed to send bulk events to server ', error.message);
+      }
+    }
     return (
-    <div className="flex flex-row items-center m-10">
-        <Button variant='outline' onClick={simulateEvent} className="m-6">Simulate Event</Button>
-        <CampaignStatsTable
-             campaigns={campaigns} 
-             onRowClick={handleCampaignSelect}
-             selectedCampaignId={selectedCampaignId} 
-             isLoading={isLoading}
-        />
+    <div className="flex flex-row justify-center w-full">
+        <div className="flex flex-col ">
+            <Button variant='outline' onClick={simulateEvent} className="m-6">Simulate Event</Button>
+            <Button variant='secondary' onClick={simulateBulkEvents} className='m-4'>Load Bulk Events</Button>
+        </div>
+        {isCampaignStatsLoading ? (
+                <div className="flex flex-col items-center justify-center p-8">
+                    <p>Loading campaigns....</p>
+                    <Spinner />
+                </div>) :
+        (<CampaignStatsTable
+            campaigns={campaigns} 
+            onRowClick={handleCampaignSelect}
+       />)}
+        
+        {isBreakdownLoading && 
+                <div className="flex flex-col items-center justify-center p-8">
+                    <p>Loading breakdown....</p>
+                    <Spinner />
+                </div>}
+        
         {selectedCampaignId && !isBreakdownLoading && (
             <CampaignBreakdownTable 
                 campaignBreakdowns={campaignBreakdown} 
                 isLoading={isBreakdownLoading}
+                onClose={handleCloseBreakdown}
             />
         )}
     </div>
